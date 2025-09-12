@@ -1,0 +1,26 @@
+
+                            #
+                             Данные PostgreSQL
+
+docker/postgres-data/
+docker/pgadmin-data/
+
+
+                            #
+                             Gradle
+
+build/
+.gradle/
+
+
+                            #
+                             IDE
+
+.idea/
+*.iml
+
+
+                            #
+                             OS
+
+.DS_Store

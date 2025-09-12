@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'ru.mentee.power'
+version = '1.0.0'
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
+
+application {
+    mainClass = 'ru.mentee.power.SimpleConnection'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Только PostgreSQL драйвер
+    implementation 'org.postgresql:postgresql:42.6.0'
+}
+
+test {
+    useJUnitPlatform()
+}
