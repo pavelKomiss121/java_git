@@ -8,7 +8,6 @@ services:
       POSTGRES_DB: mentee_db
       POSTGRES_USER: mentee
       POSTGRES_PASSWORD: password123
-      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5432:5432"
     volumes:
