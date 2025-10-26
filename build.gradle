@@ -1,26 +1,89 @@
 plugins {
-    id 'java'
-    id 'application'
+	id 'java'
+	id 'com.diffplug.spotless' version '6.23.3'
+}
+
+// Версии зависимостей
+ext {
+	versions = [
+			// Плагины
+			spotless          : '6.23.3',
+
+			// Основные зависимости
+			postgresql        : '42.6.0',
+			lombok           : '1.18.30',
+
+			// Логирование
+			slf4j            : '2.0.9',
+			logback          : '1.4.11',
+
+			// Тестирование
+			junit            : '5.10.0',
+			assertj          : '3.24.2',
+
+			// Инструменты
+			googleJavaFormat : '1.17.0'
+	]
+}
+
+compileJava {
+	options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+	options.encoding = 'UTF-8'
 }
 
 group = 'ru.mentee.power'
 version = '1.0.0'
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
-application {
-    mainClass = 'ru.mentee.power.SimpleConnection'
-}
-
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    // Только PostgreSQL драйвер
-    implementation 'org.postgresql:postgresql:42.6.0'
+	// Основные зависимости
+	implementation "org.postgresql:postgresql:${versions.postgresql}"
+
+	// Lombok
+	compileOnly "org.projectlombok:lombok:${versions.lombok}"
+	annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+	testCompileOnly "org.projectlombok:lombok:${versions.lombok}"
+	testAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+
+	// Логирование
+	implementation "org.slf4j:slf4j-api:${versions.slf4j}"
+	implementation "ch.qos.logback:logback-classic:${versions.logback}"
+	implementation "ch.qos.logback:logback-core:${versions.logback}"
+
+	// Тестирование
+	testImplementation "org.junit.jupiter:junit-jupiter:${versions.junit}"
+	testImplementation "org.assertj:assertj-core:${versions.assertj}"
+}
+
+spotless {
+	format 'misc', {
+		target '*.gradle', '.gitattributes', '.gitignore'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		googleJavaFormat("${versions.googleJavaFormat}").aosp().reflowLongStrings().skipJavadocFormatting()
+		formatAnnotations()
+		licenseHeader '/* @MENTEE_POWER (C)$YEAR */'
+	}
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaExec) {
+	systemProperty 'file.encoding', 'UTF-8'
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
