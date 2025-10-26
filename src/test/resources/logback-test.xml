@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 🔇 Полностью отключаем технические сообщения logback -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <!-- ✨ Минималистичный вывод для тестов -->
+    <appender name="TEST_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>🧪 %d{HH:mm:ss} %-5level %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 📊 Только важные логи в тестах -->
+    <logger name="ru.mentee.power" level="INFO" additivity="false">
+        <appender-ref ref="TEST_CONSOLE"/>
+    </logger>
+
+    <!-- 🔇 Отключаем все остальное -->
+    <logger name="org.postgresql" level="OFF"/>
+    <logger name="com.zaxxer.hikari" level="OFF"/>
+    <logger name="org.junit" level="OFF"/>
+    <logger name="org.gradle" level="OFF"/>
+
+    <!-- 🏠 Корневой логгер - только ошибки -->
+    <root level="WARN">
+        <appender-ref ref="TEST_CONSOLE"/>
+    </root>
+
+</configuration>
