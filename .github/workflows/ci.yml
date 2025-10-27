@@ -2,7 +2,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ main, feature/*, master,  mp-156-jdbc-select-basics]
+    branches: [ main, feature/*, master]
   pull_request:
     branches: [ main ]
 
