@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.config.ApplicationConfig;
@@ -37,6 +38,21 @@ public class PostgresOrderRepositoryTest {
 
         repository = new PostgresOrderRepository(config);
         initializeTestDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        try (Connection connection =
+                        DriverManager.getConnection(
+                                config.getUrl(), config.getUsername(), config.getPassword());
+                Statement statement = connection.createStatement()) {
+
+            statement.execute("DELETE FROM orders");
+            statement.execute("DELETE FROM users");
+
+        } catch (Exception e) {
+
+        }
     }
 
     private Properties loadTestProperties() throws IOException {

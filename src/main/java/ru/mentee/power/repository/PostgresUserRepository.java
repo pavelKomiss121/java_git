@@ -20,7 +20,9 @@ public class PostgresUserRepository implements UserRepository {
 
     @Override
     public List<User> findAll() throws DataAccessException {
-        String sql = "SELECT id, name, email, created_at FROM users ORDER BY created_at DESC";
+        String sql =
+                "SELECT row_number() over (order by id) as id, name, email, created_at FROM users"
+                        + " ORDER BY created_at DESC";
         List<User> users = new ArrayList<>();
 
         try (Connection connection =
@@ -48,7 +50,9 @@ public class PostgresUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) throws DataAccessException {
-        String sql = "SELECT id, name, email, created_at FROM users WHERE id = ?";
+        String sql =
+                "SELECT id, name, email, created_at FROM (SELECT row_number() over (order by id) as"
+                        + " id, name, email, created_at FROM users) WHERE id = ?";
 
         if (id == null) {
             throw new DataAccessException("id не передали");
@@ -82,7 +86,9 @@ public class PostgresUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) throws DataAccessException {
-        String sql = "SELECT id, name, email, created_at FROM users WHERE email = ?";
+        String sql =
+                "SELECT row_number() over (order by id) as id, name, email, created_at FROM users"
+                        + " WHERE email = ?";
 
         if (email == null) {
             throw new DataAccessException("email не передали");
@@ -122,8 +128,8 @@ public class PostgresUserRepository implements UserRepository {
         }
 
         String sql =
-                "SELECT id, name, email, created_at FROM users WHERE created_at > ? ORDER BY"
-                        + " created_at DESC";
+                "SELECT row_number() over (order by id) as id, name, email, created_at FROM users"
+                        + " WHERE created_at > ? ORDER BY created_at DESC";
         List<User> users = new ArrayList<>();
 
         try (Connection connection =
@@ -153,7 +159,9 @@ public class PostgresUserRepository implements UserRepository {
 
     @Override
     public List<User> findByNameContaining(String namePart) throws DataAccessException {
-        String sql = "SELECT id, name, email, created_at FROM users WHERE name LIKE ?";
+        String sql =
+                "SELECT row_number() over (order by id) as id, name, email, created_at FROM users"
+                        + " WHERE name LIKE ?";
         List<User> users = new ArrayList<>();
 
         if (namePart == null) {
