@@ -31,8 +31,8 @@ build/
                             #
                              ⚠️ ВАЖНО: Локальные секреты для разработки
 
-secrets.properties
 
+secret.properties
 
                             #
                              Логи
