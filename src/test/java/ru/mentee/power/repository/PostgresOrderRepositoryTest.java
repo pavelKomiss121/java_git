@@ -48,6 +48,7 @@ public class PostgresOrderRepositoryTest {
                                 config.getUrl(), config.getUsername(), config.getPassword());
                 Statement statement = connection.createStatement()) {
 
+            statement.execute("DELETE FROM order_items");
             statement.execute("DELETE FROM orders");
             statement.execute("DELETE FROM users");
 
@@ -262,6 +263,7 @@ public class PostgresOrderRepositoryTest {
                         DriverManager.getConnection(
                                 config.getUrl(), config.getUsername(), config.getPassword());
                 Statement statement = connection.createStatement()) {
+            statement.execute("DELETE FROM order_items");
             statement.execute("DELETE FROM orders");
         } catch (Exception e) {
             throw new RuntimeException("Ошибка очистки БД", e);
@@ -286,6 +288,7 @@ public class PostgresOrderRepositoryTest {
                         DriverManager.getConnection(
                                 config.getUrl(), config.getUsername(), config.getPassword());
                 Statement statement = connection.createStatement()) {
+            statement.execute("DELETE FROM order_items");
             statement.execute("DELETE FROM orders");
         } catch (Exception e) {
             throw new RuntimeException("Ошибка очистки БД", e);

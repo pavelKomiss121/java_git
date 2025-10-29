@@ -13,6 +13,22 @@ CREATE TABLE IF NOT EXISTS orders (
                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS products (
+                                     id UUID PRIMARY KEY,
+                                     name VARCHAR(100) NOT NULL,
+                                     category VARCHAR(50),
+                                     price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+                                     id UUID PRIMARY KEY,
+                                     order_id UUID NOT NULL REFERENCES orders(id),
+                                     product_id UUID NOT NULL REFERENCES products(id),
+                                     quantity INTEGER NOT NULL
+);
+
+DELETE FROM order_items;
+DELETE FROM products;
 DELETE FROM orders;
 DELETE FROM users;
 
@@ -33,3 +49,19 @@ INSERT INTO orders (id, user_id, total_price, status, created_at) VALUES
     ('550e8400-e29b-41d4-a716-446655440104', '550e8400-e29b-41d4-a716-446655440001', 10000.00, 'COMPLETED', '2024-02-15 10:00:00'),
     ('550e8400-e29b-41d4-a716-446655440105', '550e8400-e29b-41d4-a716-446655440002', 8000.00, 'COMPLETED', '2024-01-10 10:00:00'),
     ('550e8400-e29b-41d4-a716-446655440106', '550e8400-e29b-41d4-a716-446655440003', 60000.00, 'COMPLETED', '2024-01-20 10:00:00');
+
+-- Тестовые данные products (для теста getTopSellingProducts)
+INSERT INTO products (id, name, category, price) VALUES
+    ('550e8400-e29b-41d4-a716-446655440200', 'Product A', 'Electronics', 100.00),
+    ('550e8400-e29b-41d4-a716-446655440201', 'Product B', 'Electronics', 200.00),
+    ('550e8400-e29b-41d4-a716-446655440202', 'Product C', 'Books', 50.00),
+    ('550e8400-e29b-41d4-a716-446655440203', 'Product D', 'Clothing', 150.00);
+
+-- Тестовые данные order_items (связываем заказы с товарами)
+INSERT INTO order_items (id, order_id, product_id, quantity) VALUES
+    ('550e8400-e29b-41d4-a716-446655440300', '550e8400-e29b-41d4-a716-446655440100', '550e8400-e29b-41d4-a716-446655440200', 5),
+    ('550e8400-e29b-41d4-a716-446655440301', '550e8400-e29b-41d4-a716-446655440101', '550e8400-e29b-41d4-a716-446655440200', 3),
+    ('550e8400-e29b-41d4-a716-446655440302', '550e8400-e29b-41d4-a716-446655440102', '550e8400-e29b-41d4-a716-446655440201', 2),
+    ('550e8400-e29b-41d4-a716-446655440303', '550e8400-e29b-41d4-a716-446655440103', '550e8400-e29b-41d4-a716-446655440201', 4),
+    ('550e8400-e29b-41d4-a716-446655440304', '550e8400-e29b-41d4-a716-446655440104', '550e8400-e29b-41d4-a716-446655440202', 10),
+    ('550e8400-e29b-41d4-a716-446655440305', '550e8400-e29b-41d4-a716-446655440105', '550e8400-e29b-41d4-a716-446655440203', 1);
