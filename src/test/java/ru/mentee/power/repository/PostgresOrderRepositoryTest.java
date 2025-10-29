@@ -20,6 +20,7 @@ import ru.mentee.power.entity.MonthlyOrderStats;
 import ru.mentee.power.entity.OrderAnalytics;
 import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.exception.SASTException;
+import ru.mentee.power.repository.postgres.PostgresOrderRepository;
 
 public class PostgresOrderRepositoryTest {
 

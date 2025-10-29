@@ -1,5 +1,5 @@
 /* @MENTEE_POWER (C)2025 */
-package ru.mentee.power.repository;
+package ru.mentee.power.repository.postgres;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -9,6 +9,7 @@ import java.util.Optional;
 import ru.mentee.power.config.ApplicationConfig;
 import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.model.User;
+import ru.mentee.power.repository.interfaces.UserRepository;
 
 public class PostgresUserRepository implements UserRepository {
 

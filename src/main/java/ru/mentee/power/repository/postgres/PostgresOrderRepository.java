@@ -1,5 +1,5 @@
 /* @MENTEE_POWER (C)2025 */
-package ru.mentee.power.repository;
+package ru.mentee.power.repository.postgres;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,6 +10,7 @@ import ru.mentee.power.config.ApplicationConfig;
 import ru.mentee.power.entity.MonthlyOrderStats;
 import ru.mentee.power.entity.OrderAnalytics;
 import ru.mentee.power.exception.DataAccessException;
+import ru.mentee.power.repository.interfaces.OrderRepository;
 
 public class PostgresOrderRepository implements OrderRepository {
 

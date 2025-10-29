@@ -1,5 +1,5 @@
 /* @MENTEE_POWER (C)2025 */
-package ru.mentee.power.repository;
+package ru.mentee.power.repository.interfaces;
 
 import java.time.LocalDate;
 import java.util.List;
