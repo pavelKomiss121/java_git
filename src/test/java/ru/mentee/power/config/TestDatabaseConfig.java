@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.exception.SASTException;
 import ru.mentee.power.model.User;
-import ru.mentee.power.repository.PostgresUserRepository;
+import ru.mentee.power.repository.postgres.PostgresUserRepository;
 
 public class TestDatabaseConfig {
     private PostgresUserRepository repository;
