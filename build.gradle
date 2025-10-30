@@ -1,6 +1,7 @@
 plugins {
 	id 'java'
 	id 'com.diffplug.spotless' version '6.23.3'
+	id 'io.spring.dependency-management' version '1.1.6'
 }
 // Настройки проекта (из MP-153)
 group = 'ru.mentee.power'
@@ -38,26 +39,31 @@ ext {
 
 dependencies {
 	// Основные зависимости
-	implementation "org.postgresql:postgresql:${versions.postgresql}"
+	implementation 'org.postgresql:postgresql:42.6.0'
+	implementation 'org.slf4j:slf4j-api:2.0.9'
+	implementation 'ch.qos.logback:logback-classic:1.4.11'
 
-	// Lombok
-	compileOnly "org.projectlombok:lombok:${versions.lombok}"
-	annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
-	testCompileOnly "org.projectlombok:lombok:${versions.lombok}"
-	testAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+	// TestContainers
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+	testImplementation 'org.assertj:assertj-core:3.24.2'
+	testImplementation "org.testcontainers:testcontainers:1.20.4"
+	testImplementation "org.testcontainers:junit-jupiter:1.20.4"
+	testImplementation "org.testcontainers:postgresql:1.20.4"
 
-	// Логирование
-	implementation "org.slf4j:slf4j-api:${versions.slf4j}"
-	implementation "ch.qos.logback:logback-classic:${versions.logback}"
-	implementation "ch.qos.logback:logback-core:${versions.logback}"
+	// H2 (для H2-тестов)
+	testImplementation 'com.h2database:h2:2.2.224'
 
-	testImplementation "org.junit.jupiter:junit-jupiter:${versions.junit}"
-	testImplementation "org.assertj:assertj-core:${versions.assertj}"
-	testImplementation "com.h2database:h2:${versions.h2}"
-
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// Дополнительные утилиты
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
+// Обязательная секция для TestContainers
+dependencyManagement {
+	imports {
+		mavenBom "org.testcontainers:testcontainers-bom:1.19.1"
+	}
+}
 
 spotless {
 	format 'misc', {
