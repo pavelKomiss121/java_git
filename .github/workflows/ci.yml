@@ -84,19 +84,26 @@ jobs:
         path: 'build/test-results/test/*.xml'
         reporter: java-junit
 
-    # 📈 Публикация отчета покрытия кода
+    # 📈 Генерация и публикация отчета покрытия кода
+    - name: Generate JaCoCo coverage report
+      run: ./gradlew jacocoTestReport
+      if: always()
+
     - name: Upload JaCoCo coverage report
       uses: actions/upload-artifact@v4
+      if: always()
+      continue-on-error: true  # Продолжить даже если файлы не найдены
       with:
         name: jacoco-report-${{ github.run_id }}
         path: build/reports/jacoco/test/html
         retention-days: 7
 
   # 🚀 Дополнительная задача: тестирование производительности
+  # Отключена по умолчанию - включает только при необходимости
   performance-tests:
     runs-on: ubuntu-latest
     needs: test-with-testcontainers
-    if: false  # Отключено по умолчанию, можно включить через matrix
+    if: false  # Отключено по умолчанию. Чтобы включить: измените на 'true' или используйте matrix
 
     services:
       docker:
