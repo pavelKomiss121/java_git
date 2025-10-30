@@ -50,6 +50,14 @@ jobs:
         docker pull postgres:15-alpine
         docker pull testcontainers/ryuk:0.5.1
 
+    # ✅ Проверка миграций Liquibase через Testcontainers
+    - name: Validate Liquibase migrations
+      run: ./gradlew liquibaseValidateCi
+      env:
+        TESTCONTAINERS_REUSE_ENABLE: true
+        TESTCONTAINERS_CHECKS_DISABLE: true
+        GRADLE_OPTS: -Xmx2g -XX:MaxMetaspaceSize=512m
+
     # 🧪 Запуск тестов с TestContainers
     - name: Run integration tests
       run: ./gradlew test --info

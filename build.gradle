@@ -89,7 +89,7 @@ dependencyManagement {
 liquibase {
 	activities {
 		main {
-			changeLogFile 'src/main/resources/db/changelog.yaml'
+			changelogFile 'src/main/resources/db/changelog.yaml'
 			url 'jdbc:postgresql://localhost:5432/mentee_power_db'
 			username 'mentee'
 			password System.getenv('DB_PASSWORD') ?: 'password'
@@ -99,11 +99,12 @@ liquibase {
 		}
 
 		// Конфигурация для ТЕСТОВ (обязательно!)
+		// Поддерживает переменные окружения для CI (Testcontainers)
 		test {
-			changeLogFile 'src/main/resources/db/changelog.yaml'
-			url 'jdbc:postgresql://localhost:5433/mentee_power_test_db'
-			username 'mentee'
-			password 'password123'
+			changelogFile 'src/main/resources/db/changelog.yaml'
+			url System.getenv('LIQUIBASE_TEST_URL') ?: 'jdbc:postgresql://localhost:5433/mentee_power_test_db'
+			username System.getenv('LIQUIBASE_TEST_USER') ?: 'mentee'
+			password System.getenv('LIQUIBASE_TEST_PASSWORD') ?: 'password123'
 			driver 'org.postgresql.Driver'
 			defaultSchemaName 'mentee_power'
 			contexts 'test,default'
@@ -111,7 +112,7 @@ liquibase {
 
 		// Конфигурация для production (без тестовых данных)
 		prod {
-			changeLogFile 'src/main/resources/db/changelog.yaml'
+			changelogFile 'src/main/resources/db/changelog.yaml'
 			url System.getenv('PROD_DB_URL') ?: 'jdbc:postgresql://localhost:5432/mentee_power_prod'
 			username System.getenv('PROD_DB_USER') ?: 'mentee_power'
 			password System.getenv('PROD_DB_PASSWORD')
@@ -125,10 +126,26 @@ liquibase {
 // Задачи для удобства работы с разными средами
 task liquibaseUpdateTest {
 	group = 'liquibase'
-	description = 'Применить миграции к тестовой БД'
+	description = 'Применить миграции к тестовой БД (для локальной разработки)'
+	// В CI эта задача может использовать переменные окружения для Testcontainers
 	doLast {
 		project.liquibase.runList = 'test'
 		project.tasks.getByName('update').actions.each { it.execute(project.tasks.getByName('update')) }
+	}
+}
+
+// Задача для CI: запускает тест, который применяет миграции через Testcontainers
+task liquibaseValidateCi(type: Test) {
+	group = 'liquibase'
+	description = 'Проверить применение миграций через Testcontainers в CI'
+	useJUnitPlatform()
+	include '**/LiquibaseMigrationTest.class'
+	filter {
+		includeTestsMatching 'ru.mentee.power.migration.LiquibaseMigrationTest.shouldApplyAllSqlMigrationsThroughYamlChangelogSuccessfully'
+	}
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		showStandardStreams = true
 	}
 }
 
@@ -171,8 +188,8 @@ tasks.withType(JavaCompile) {
 test {
 	useJUnitPlatform()
 
-	// Перед тестами применяем миграции к тестовой БД
-	dependsOn 'liquibaseUpdateTest'
+	// В CI миграции применяются автоматически через Testcontainers в тестах Liquibase
+	// Для локальной разработки можно запустить вручную: ./gradlew liquibaseUpdateTest test
 
 	systemProperty 'DB_URL', 'jdbc:postgresql://localhost:5433/mentee_power_test_db'
 	systemProperty 'DB_USER', 'mentee'
