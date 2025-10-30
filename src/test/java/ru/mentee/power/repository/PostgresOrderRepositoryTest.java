@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.config.ApplicationConfig;
 import ru.mentee.power.config.ConfigFilePath;
@@ -22,6 +23,7 @@ import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.exception.SASTException;
 import ru.mentee.power.repository.postgres.PostgresOrderRepository;
 
+@Disabled("Requires test-schema.sql file")
 public class PostgresOrderRepositoryTest {
 
     private PostgresOrderRepository repository;

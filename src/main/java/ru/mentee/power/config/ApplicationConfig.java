@@ -69,23 +69,48 @@ public class ApplicationConfig implements DatabaseConfig, Overridable, Fileable 
 
     @Override
     public void override() {
+        // 1) System properties (Gradle: test.systemProperty ...)
+        String sysUrl = System.getProperty(DB_URL);
+        String sysUser = System.getProperty(DB_USERNAME);
+        String sysPass = System.getProperty(DB_PASSWORD);
+        String sysDrv = System.getProperty(DB_DRIVER);
+
+        if (sysUrl != null && !sysUrl.isBlank()) {
+            properties.setProperty(DB_URL, sysUrl);
+            log.info("{} переопределен из System Property", DB_URL);
+        }
+        if (sysUser != null && !sysUser.isBlank()) {
+            properties.setProperty(DB_USERNAME, sysUser);
+            log.info("{} переопределен из System Property", DB_USERNAME);
+        }
+        if (sysPass != null && !sysPass.isBlank()) {
+            properties.setProperty(DB_PASSWORD, sysPass);
+            log.info("{} переопределен из System Property", DB_PASSWORD);
+        }
+        if (sysDrv != null && !sysDrv.isBlank()) {
+            properties.setProperty(DB_DRIVER, sysDrv);
+            log.info("{} переопределен из System Property", DB_DRIVER);
+        }
+
+        // 2) ENV (ниже по приоритету)
         String envUrl = System.getenv(DB_URL);
         String envUsername = System.getenv(DB_USERNAME);
         String envPassword = System.getenv(DB_PASSWORD);
         String envDriver = System.getenv(DB_DRIVER);
-        if (envUrl != null) {
+
+        if (envUrl != null && !envUrl.isBlank()) {
             properties.setProperty(DB_URL, envUrl);
-            log.info("{} переопределен из Environment Variable", DB_USERNAME);
+            log.info("{} переопределен из Environment Variable", DB_URL);
         }
-        if (envUsername != null) {
+        if (envUsername != null && !envUsername.isBlank()) {
             properties.setProperty(DB_USERNAME, envUsername);
             log.info("{} переопределен из Environment Variable", DB_USERNAME);
         }
-        if (envPassword != null) {
+        if (envPassword != null && !envPassword.isBlank()) {
             properties.setProperty(DB_PASSWORD, envPassword);
             log.info("{} переопределен из Environment Variable", DB_PASSWORD);
         }
-        if (envDriver != null) {
+        if (envDriver != null && !envDriver.isBlank()) {
             properties.setProperty(DB_DRIVER, envDriver);
             log.info("{} переопределен из Environment Variable", DB_DRIVER);
         }

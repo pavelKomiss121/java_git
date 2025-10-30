@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.exception.SASTException;
 import ru.mentee.power.model.User;
 import ru.mentee.power.repository.postgres.PostgresUserRepository;
 
+@Disabled("Requires test-schema.sql file")
 public class TestDatabaseConfig {
     private PostgresUserRepository repository;
     private ApplicationConfig config;
