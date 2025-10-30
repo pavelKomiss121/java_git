@@ -2,7 +2,7 @@ name: CI Pipeline with TestContainers
 
 on:
   push:
-    branches: [ main, 'mp-*' ]
+    branches: [ main, feature/*, master]
   pull_request:
     branches: [ main ]
 
