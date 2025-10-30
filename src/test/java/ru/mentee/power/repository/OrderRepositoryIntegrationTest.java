@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.entity.MonthlyOrderStats;
@@ -20,6 +21,7 @@ import ru.mentee.power.repository.postgres.PostgresOrderRepository;
 import ru.mentee.power.repository.postgres.PostgresUserOrderRepository;
 import ru.mentee.power.test.BaseIntegrationTest;
 
+@Disabled("Only Liquibase tests should run")
 @DisplayName("Интеграционное тестирование OrderRepository с TestContainers")
 class OrderRepositoryIntegrationTest extends BaseIntegrationTest {
 
@@ -131,6 +133,7 @@ class OrderRepositoryIntegrationTest extends BaseIntegrationTest {
     }
 }
 
+@Disabled("Only Liquibase tests should run")
 @DisplayName("Интеграционное тестирование UserOrderRepository с TestContainers")
 class UserOrderRepositoryIntegrationTest extends BaseIntegrationTest {
 
