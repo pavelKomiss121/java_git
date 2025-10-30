@@ -23,8 +23,7 @@ public class BaseIntegrationTest implements TestDataPreparer {
             new PostgreSQLContainer<>("postgres:15-alpine")
                     .withDatabaseName("test")
                     .withUsername("root")
-                    .withPassword("root")
-                    .withInitScript("init.sql");
+                    .withPassword("root");
 
     protected ApplicationConfig config;
 
@@ -35,8 +34,6 @@ public class BaseIntegrationTest implements TestDataPreparer {
         System.out.println("DB URL = " + config.getUrl());
         System.out.println("DB USER = " + config.getUsername());
 
-        // Очистка данных между тестами (но не схемы!)
-        cleanupAllData();
     }
 
     protected ApplicationConfig createTestConfig() throws SASTException, IOException {
@@ -58,7 +55,6 @@ public class BaseIntegrationTest implements TestDataPreparer {
         p.setProperty("db.schema", "mentee_power");
         p.setProperty("db.driver", "org.postgresql.Driver");
 
-        // ключевое: не загружать main-конфиги, чтобы не получить localhost
         return new ApplicationConfig(p, new ConfigFilePath()) {
             @Override
             public void load(String path) {
@@ -70,6 +66,10 @@ public class BaseIntegrationTest implements TestDataPreparer {
     protected Connection getTestConnection() throws SQLException {
         return DriverManager.getConnection(
                 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+    }
+
+    protected PostgreSQLContainer<?> getPostgresContainer() {
+        return postgres;
     }
 
     @Override
