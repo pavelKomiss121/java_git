@@ -33,7 +33,6 @@ public class BaseIntegrationTest implements TestDataPreparer {
         config = createTestConfig();
         System.out.println("DB URL = " + config.getUrl());
         System.out.println("DB USER = " + config.getUsername());
-
     }
 
     protected ApplicationConfig createTestConfig() throws SASTException, IOException {

@@ -70,10 +70,10 @@ public class ApplicationConfig implements DatabaseConfig, Overridable, Fileable 
     @Override
     public void override() {
         // 1) System properties (Gradle: test.systemProperty ...)
-        String sysUrl  = System.getProperty(DB_URL);
+        String sysUrl = System.getProperty(DB_URL);
         String sysUser = System.getProperty(DB_USERNAME);
         String sysPass = System.getProperty(DB_PASSWORD);
-        String sysDrv  = System.getProperty(DB_DRIVER);
+        String sysDrv = System.getProperty(DB_DRIVER);
 
         if (sysUrl != null && !sysUrl.isBlank()) {
             properties.setProperty(DB_URL, sysUrl);
