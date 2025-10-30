@@ -1,0 +1,35 @@
+
+databaseChangeLog:
+  - include:
+      file: migrations/001-create-schema.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/002-create-users-table.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/003-create-orders-table.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/005-create-products-table.sql
+      relativeToChangelogFile: true
+
+
+
+  - include:
+      file: migrations/004-add-user-phone.sql
+      relativeToChangelogFile: true
+
+
+
+  - include:
+      file: testdata/dev-test-data.sql
+      relativeToChangelogFile: true
+      context: dev
+
+  - include:
+      file: testdata/prod-reference-data.sql
+      relativeToChangelogFile: true
+      context: prod
