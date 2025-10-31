@@ -37,7 +37,10 @@ class LiquibaseMigrationTest extends BaseIntegrationTest {
                             .findCorrectDatabaseImplementation(new JdbcConnection(conn));
 
             liquibase =
-                    new Liquibase("db/changelog.yaml", new ClassLoaderResourceAccessor(), database);
+                    new Liquibase(
+                            "db/migrations_160/changelog.yaml",
+                            new ClassLoaderResourceAccessor(),
+                            database);
 
             // Применяем миграции для тестирования
             liquibase.update("dev,test");
@@ -151,7 +154,10 @@ class LiquibaseMigrationTest extends BaseIntegrationTest {
                     DatabaseFactory.getInstance()
                             .findCorrectDatabaseImplementation(new JdbcConnection(conn));
             Liquibase lb =
-                    new Liquibase("db/changelog.yaml", new ClassLoaderResourceAccessor(), database);
+                    new Liquibase(
+                            "db/migrations_160/changelog.yaml",
+                            new ClassLoaderResourceAccessor(),
+                            database);
 
             try (Statement s = conn.createStatement();
                     ResultSet before =
@@ -210,7 +216,7 @@ class LiquibaseMigrationTest extends BaseIntegrationTest {
     @DisplayName("Should проверить корректность YAML changelog структуры")
     void shouldValidateYamlChangelogStructure() {
         // Простейшая валидация: файл существует и содержит include нужных SQL
-        String yamlPath = "src/main/resources/db/changelog.yaml";
+        String yamlPath = "src/main/resources/db/migrations_160/changelog.yaml";
         try {
             java.nio.file.Path p = java.nio.file.Paths.get(yamlPath);
             String content = java.nio.file.Files.readString(p);
@@ -230,12 +236,12 @@ class LiquibaseMigrationTest extends BaseIntegrationTest {
     void shouldValidateSqlLiquibaseFormatting() {
         String[] sqlFiles =
                 new String[] {
-                    "src/main/resources/db/migrations/001-create-schema.sql",
-                    "src/main/resources/db/migrations/002-create-users-table.sql",
-                    "src/main/resources/db/migrations/003-create-orders-table.sql",
-                    "src/main/resources/db/migrations/004-add-user-phone.sql",
-                    "src/main/resources/db/migrations/005-create-products-table.sql",
-                    "src/main/resources/db/testdata/dev-test-data.sql"
+                    "src/main/resources/db/migrations_160/migrations/001-create-schema.sql",
+                    "src/main/resources/db/migrations_160/migrations/002-create-users-table.sql",
+                    "src/main/resources/db/migrations_160/migrations/003-create-orders-table.sql",
+                    "src/main/resources/db/migrations_160/migrations/004-add-user-phone.sql",
+                    "src/main/resources/db/migrations_160/migrations/005-create-products-table.sql",
+                    "src/main/resources/db/migrations_160/testdata/dev-test-data.sql"
                 };
         for (String path : sqlFiles) {
             try {
@@ -264,7 +270,10 @@ class LiquibaseSqlRollbackTest extends BaseIntegrationTest {
                     DatabaseFactory.getInstance()
                             .findCorrectDatabaseImplementation(new JdbcConnection(conn));
             liquibase =
-                    new Liquibase("db/changelog.yaml", new ClassLoaderResourceAccessor(), database);
+                    new Liquibase(
+                            "db/migrations_160/changelog.yaml",
+                            new ClassLoaderResourceAccessor(),
+                            database);
             liquibase.update("dev,test");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -286,7 +295,10 @@ class LiquibaseSqlRollbackTest extends BaseIntegrationTest {
                     DatabaseFactory.getInstance()
                             .findCorrectDatabaseImplementation(new JdbcConnection(conn));
             Liquibase liquibaseInstance =
-                    new Liquibase("db/changelog.yaml", new ClassLoaderResourceAccessor(), database);
+                    new Liquibase(
+                            "db/migrations_160/changelog.yaml",
+                            new ClassLoaderResourceAccessor(),
+                            database);
             liquibaseInstance.rollback(1, "dev,test");
 
             ResultSet rs2 = stmt.executeQuery("select count(*) from public.databasechangelog");
@@ -311,7 +323,10 @@ class LiquibaseSqlRollbackTest extends BaseIntegrationTest {
                     DatabaseFactory.getInstance()
                             .findCorrectDatabaseImplementation(new JdbcConnection(conn));
             Liquibase liquibaseInstance =
-                    new Liquibase("db/changelog.yaml", new ClassLoaderResourceAccessor(), database);
+                    new Liquibase(
+                            "db/migrations_160/changelog.yaml",
+                            new ClassLoaderResourceAccessor(),
+                            database);
             liquibaseInstance.rollback(2, "dev,test");
 
             ResultSet rs2 = stmt.executeQuery("select count(*) from public.databasechangelog");
