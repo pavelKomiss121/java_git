@@ -36,7 +36,7 @@ SELECT
     'Product ' || generate_series,
     'Description for product ' || generate_series || ' with lots of details about features and benefits',
     (random() * 99999 + 1)::decimal(10,2),
-    (random() * 10 + 1)::bigint,
+    (FLOOR(random() * 10)::int + 1)::bigint,  -- категории от 1 до 10
     'SKU-' || LPAD(generate_series::text, 8, '0'),
     NOW() - (random() * interval '365 days')
 FROM generate_series(1, 100000);
@@ -44,7 +44,7 @@ FROM generate_series(1, 100000);
 -- 200,000 заказов
 INSERT INTO orders (user_id, total, status, created_at, region)
 SELECT
-    (random() * 50000 + 1)::bigint,
+    (FLOOR(random() * 50000)::int + 1)::bigint,  -- пользователи от 1 до 50000
     (random() * 5000 + 10)::decimal(10,2),
     CASE (random() * 4)::int
         WHEN 0 THEN 'PENDING'
@@ -65,9 +65,9 @@ FROM generate_series(1, 200000);
 -- 800,000 позиций в заказах
 INSERT INTO order_items (order_id, product_id, quantity, price)
 SELECT
-    (random() * 200000 + 1)::bigint,
-    (random() * 100000 + 1)::bigint,
-    (random() * 5 + 1)::int,
+    (FLOOR(random() * 200000)::int + 1)::bigint,  -- заказы от 1 до 200000
+    (FLOOR(random() * 100000)::int + 1)::bigint,  -- продукты от 1 до 100000
+    (FLOOR(random() * 5)::int + 1)::int,  -- количество от 1 до 5
     (random() * 999 + 1)::decimal(10,2)
 FROM generate_series(1, 800000);
 

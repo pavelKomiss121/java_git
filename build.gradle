@@ -90,7 +90,7 @@ dependencyManagement {
 liquibase {
 	activities {
 		main {
-			changelogFile 'src/main/resources/db/migrations_160/changelog.yaml'
+			changelogFile 'src/main/resources/db/migrations_161/changelog.yaml'
 			url 'jdbc:postgresql://localhost:5432/mentee_power_db'
 			username 'mentee'
 			password System.getenv('DB_PASSWORD') ?: 'password'
@@ -102,7 +102,7 @@ liquibase {
 		// Конфигурация для ТЕСТОВ (обязательно!)
 		// Поддерживает переменные окружения для CI (Testcontainers)
 		test {
-			changelogFile 'src/main/resources/db/migrations_160/changelog.yaml'
+			changelogFile 'src/main/resources/db/migrations_161/changelog.yaml'
 			url System.getenv('LIQUIBASE_TEST_URL') ?: 'jdbc:postgresql://localhost:5433/mentee_power_test_db'
 			username System.getenv('LIQUIBASE_TEST_USER') ?: 'mentee'
 			password System.getenv('LIQUIBASE_TEST_PASSWORD') ?: 'password123'
@@ -113,7 +113,7 @@ liquibase {
 
 		// Конфигурация для production (без тестовых данных)
 		prod {
-			changelogFile 'src/main/resources/db/migrations_160/changelog.yaml'
+			changelogFile 'src/main/resources/db/migrations_161/changelog.yaml'
 			url System.getenv('PROD_DB_URL') ?: 'jdbc:postgresql://localhost:5432/mentee_power_prod'
 			username System.getenv('PROD_DB_USER') ?: 'mentee_power'
 			password System.getenv('PROD_DB_PASSWORD')
