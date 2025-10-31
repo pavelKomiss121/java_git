@@ -21,6 +21,9 @@ build/
 *.iml
 .vscode/
 
+# Скомпилированные классы (Eclipse, IntelliJ)
+bin/
+
 
                             #
                              OS
