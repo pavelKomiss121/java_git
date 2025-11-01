@@ -11,3 +11,4 @@ databaseChangeLog:
   - include:
       file: migrations/003-generate-massive-test-data.sql
       relativeToChangelogFile: true
+
