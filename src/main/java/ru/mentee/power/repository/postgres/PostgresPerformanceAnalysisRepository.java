@@ -45,17 +45,17 @@ public class PostgresPerformanceAnalysisRepository implements PerformanceAnalysi
     """;
 
     private static final String[] CREATE_PERFORMANCE_INDEXES = {
-        "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_city ON users(city)",
-        "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_user_date_status ON orders(user_id,"
-                + " created_at, status)",
-        "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_status_date ON orders(status,"
-                + " created_at)"
+        "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_city ON mentee_power.users(city)",
+        "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_user_date_status ON"
+                + " mentee_power.orders(user_id, created_at, status)",
+        "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_status_date ON"
+                + " mentee_power.orders(status, created_at)"
     };
 
     private static final String[] DROP_PERFORMANCE_INDEXES = {
-        "DROP INDEX IF EXISTS idx_users_city",
-        "DROP INDEX IF EXISTS idx_orders_user_date_status",
-        "DROP INDEX IF EXISTS idx_orders_status_date"
+        "DROP INDEX IF EXISTS mentee_power.idx_users_city",
+        "DROP INDEX IF EXISTS mentee_power.idx_orders_user_date_status",
+        "DROP INDEX IF EXISTS mentee_power.idx_orders_status_date"
     };
 
     private ApplicationConfig config;
@@ -116,67 +116,123 @@ public class PostgresPerformanceAnalysisRepository implements PerformanceAnalysi
         long startTime = System.currentTimeMillis();
         LocalDateTime executedAt = LocalDateTime.now();
 
-        try (Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(HEAVY_USER_ORDERS_QUERY); ) {
-            statement.setString(1, city);
-            statement.setDate(2, Date.valueOf(startDate));
-            statement.setInt(3, minOrders);
+        try (Connection connection = getConnection()) {
+            // Очищаем кэш планов выполнения и буферы перед измерением производительности
+            try (Statement clearStmt = connection.createStatement()) {
+                clearStmt.execute("DISCARD PLANS"); // Очистка кэша планов выполнения
+                // Очистка shared_buffers не требуется и не безопасна в продакшене,
+                // но для тестов можно использовать pg_prewarm или просто полагаться на ANALYZE
+            } catch (SQLException e) {
+                // Игнорируем ошибки очистки кэша - это не критично
+            }
 
-            try (ResultSet resultSet = statement.executeQuery(); ) {
-                while (resultSet.next()) {
-                    UserOrderStats user =
-                            UserOrderStats.builder()
-                                    .userId(resultSet.getLong("user_id"))
-                                    .userName(resultSet.getString("user_name"))
-                                    .ordersCount(resultSet.getInt("orders_count"))
-                                    .email(resultSet.getString("email"))
-                                    .avgOrderValue(resultSet.getBigDecimal("avg_order_value"))
-                                    .totalSpent(resultSet.getBigDecimal("total_spent"))
-                                    .build();
-                    userOrderStats.add(user);
+            try (PreparedStatement statement =
+                    connection.prepareStatement(HEAVY_USER_ORDERS_QUERY)) {
+                statement.setString(1, city);
+                statement.setDate(2, Date.valueOf(startDate));
+                statement.setInt(3, minOrders);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        UserOrderStats user =
+                                UserOrderStats.builder()
+                                        .userId(resultSet.getLong("user_id"))
+                                        .userName(resultSet.getString("user_name"))
+                                        .ordersCount(resultSet.getInt("orders_count"))
+                                        .email(resultSet.getString("email"))
+                                        .avgOrderValue(resultSet.getBigDecimal("avg_order_value"))
+                                        .totalSpent(resultSet.getBigDecimal("total_spent"))
+                                        .build();
+                        userOrderStats.add(user);
+                    }
                 }
             }
 
             long executionTimeMs = System.currentTimeMillis() - startTime;
 
-            // Получаем метрики из EXPLAIN ANALYZE
+            // Получаем метрики из EXPLAIN ANALYZE на том же соединении
+            // Очищаем кэш перед EXPLAIN ANALYZE, чтобы получить свежий план
             Long planningMs = null;
             Long buffersHit = null;
             Long buffersRead = null;
+            Boolean indexesUsed = null;
 
             try {
+                // Очищаем кэш перед EXPLAIN ANALYZE
+                try (Statement clearStmt = connection.createStatement()) {
+                    clearStmt.execute("DISCARD PLANS");
+                } catch (SQLException e) {
+                    // Игнорируем ошибки очистки кэша
+                }
+
                 String queryStr =
                         String.format(
                                 "SELECT u.id as user_id, u.name as user_name, u.email, COUNT(o.id)"
                                     + " as orders_count, SUM(o.total) as total_spent, AVG(o.total)"
-                                    + " as avg_order_value FROM users u JOIN orders o ON u.id ="
-                                    + " o.user_id WHERE u.city = '%s' AND o.created_at >="
-                                    + " '%s'::DATE AND o.status = 'DELIVERED' GROUP BY u.id,"
-                                    + " u.name, u.email HAVING COUNT(o.id) > %s ORDER BY"
-                                    + " total_spent DESC LIMIT 20",
+                                    + " as avg_order_value FROM mentee_power.users u JOIN"
+                                    + " mentee_power.orders o ON u.id = o.user_id WHERE u.city ="
+                                    + " '%s' AND o.created_at >= '%s'::DATE AND o.status ="
+                                    + " 'DELIVERED' GROUP BY u.id, u.name, u.email HAVING"
+                                    + " COUNT(o.id) > %s ORDER BY total_spent DESC LIMIT 20",
                                 city.replace("'", "''"), startDate, minOrders);
 
-                QueryExecutionPlan plan = getExecutionPlan(queryStr);
-                planningMs =
-                        plan.getPlanningTime() != null
-                                ? Math.round(plan.getPlanningTime().doubleValue() * 1000)
-                                : null;
+                String explainQuery = String.format(EXPLAIN_ANALYZE_WRAPPER, queryStr);
+                try (PreparedStatement explainStmt = connection.prepareStatement(explainQuery);
+                        ResultSet explainRs = explainStmt.executeQuery()) {
 
-                if (plan.getNodes() != null) {
-                    buffersHit =
-                            plan.getNodes().stream()
-                                    .map(n -> n.getBuffersHit())
-                                    .filter(h -> h != null)
-                                    .reduce(0L, Long::sum);
-                    buffersRead =
-                            plan.getNodes().stream()
-                                    .map(n -> n.getBuffersRead())
-                                    .filter(r -> r != null)
-                                    .reduce(0L, Long::sum);
+                    if (explainRs.next()) {
+                        String json = explainRs.getString(1);
+                        QueryExecutionPlan plan = parseExecutionPlan(queryStr, json);
+
+                        planningMs =
+                                plan.getPlanningTime() != null
+                                        ? Math.round(plan.getPlanningTime().doubleValue() * 1000)
+                                        : null;
+
+                        if (plan.getNodes() != null) {
+                            buffersHit =
+                                    plan.getNodes().stream()
+                                            .map(n -> n.getBuffersHit())
+                                            .filter(h -> h != null)
+                                            .reduce(0L, Long::sum);
+                            buffersRead =
+                                    plan.getNodes().stream()
+                                            .map(n -> n.getBuffersRead())
+                                            .filter(r -> r != null)
+                                            .reduce(0L, Long::sum);
+
+                            // Проверяем, используются ли индексы
+                            indexesUsed =
+                                    plan.getNodes().stream()
+                                            .anyMatch(
+                                                    n ->
+                                                            n.getIndexName() != null
+                                                                    && !n.getIndexName().isEmpty());
+
+                            // Логируем информацию об использовании индексов для отладки
+                            if (indexesUsed != null && indexesUsed) {
+                                System.out.println(
+                                        "[PERF] Индексы используются в запросе: " + queryType);
+                                plan.getNodes().stream()
+                                        .filter(n -> n.getIndexName() != null)
+                                        .forEach(
+                                                n ->
+                                                        System.out.println(
+                                                                "[PERF]   - Индекс: "
+                                                                        + n.getIndexName()
+                                                                        + ", операция: "
+                                                                        + n.getNodeType()));
+                            } else {
+                                System.out.println(
+                                        "[PERF] Индексы НЕ используются в запросе: " + queryType);
+                            }
+                        }
+                    }
                 }
-            } catch (DataAccessException e) {
+            } catch (SQLException e) {
                 // Если не удалось получить метрики, оставляем null
+            } catch (Exception e) {
+                // Если произошла ошибка парсинга плана, оставляем null
             }
 
             return PerformanceMetrics.<List<UserOrderStats>>builder()
@@ -310,6 +366,13 @@ public class PostgresPerformanceAnalysisRepository implements PerformanceAnalysi
                 stmt.execute(createIndex);
             }
 
+            // Обновляем статистику после создания индексов
+            stmt.execute("ANALYZE mentee_power.users");
+            stmt.execute("ANALYZE mentee_power.orders");
+
+            // Очищаем кэш планов, чтобы PostgreSQL пересобрал планы с учетом новых индексов
+            stmt.execute("DISCARD PLANS");
+
             long executionTimeMs = System.currentTimeMillis() - startTime;
 
             return PerformanceMetrics.<String>builder()
@@ -335,6 +398,13 @@ public class PostgresPerformanceAnalysisRepository implements PerformanceAnalysi
             for (String dropIndex : DROP_PERFORMANCE_INDEXES) {
                 stmt.execute(dropIndex);
             }
+
+            // Обновляем статистику после удаления индексов
+            stmt.execute("ANALYZE mentee_power.users");
+            stmt.execute("ANALYZE mentee_power.orders");
+
+            // Очищаем кэш планов, чтобы PostgreSQL пересобрал планы без индексов
+            stmt.execute("DISCARD PLANS");
 
             long executionTimeMs = System.currentTimeMillis() - startTime;
 
