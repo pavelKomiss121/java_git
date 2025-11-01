@@ -37,7 +37,6 @@ public class PostgresUserRepository implements UserRepository {
                                 .id(resultSet.getLong("id"))
                                 .name(resultSet.getString("name"))
                                 .email(resultSet.getString("email"))
-                                .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
                                 .build();
                 users.add(user);
             }
@@ -71,8 +70,6 @@ public class PostgresUserRepository implements UserRepository {
                                     .id(resultSet.getLong("id"))
                                     .name(resultSet.getString("name"))
                                     .email(resultSet.getString("email"))
-                                    .createdAt(
-                                            resultSet.getTimestamp("created_at").toLocalDateTime())
                                     .build();
                     return Optional.of(user);
                 }
@@ -107,8 +104,6 @@ public class PostgresUserRepository implements UserRepository {
                                     .id(resultSet.getLong("id"))
                                     .name(resultSet.getString("name"))
                                     .email(resultSet.getString("email"))
-                                    .createdAt(
-                                            resultSet.getTimestamp("created_at").toLocalDateTime())
                                     .build();
                     return Optional.of(user);
                 }
@@ -145,8 +140,6 @@ public class PostgresUserRepository implements UserRepository {
                                     .id(resultSet.getLong("id"))
                                     .name(resultSet.getString("name"))
                                     .email(resultSet.getString("email"))
-                                    .createdAt(
-                                            resultSet.getTimestamp("created_at").toLocalDateTime())
                                     .build();
                     users.add(user);
                 }
@@ -181,8 +174,6 @@ public class PostgresUserRepository implements UserRepository {
                                     .id(resultSet.getLong("id"))
                                     .name(resultSet.getString("name"))
                                     .email(resultSet.getString("email"))
-                                    .createdAt(
-                                            resultSet.getTimestamp("created_at").toLocalDateTime())
                                     .build();
                     users.add(user);
                 }

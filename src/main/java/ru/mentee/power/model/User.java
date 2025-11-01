@@ -15,11 +15,14 @@ public class User {
     private Long id;
     private String name;
     private String email;
-    private LocalDateTime createdAt;
+    private String city;
+    private LocalDateTime registration_date;
+    private Boolean is_active;
 
     @Override
     public String toString() {
         return String.format(
-                "User{id=%d, name='%s', email='%s', createdAt=%s}", id, name, email, createdAt);
+                "User{id=%d, name='%s', email='%s', city='%s', registration_date=%s, is_active=%s}",
+                id, name, email, city, registration_date, is_active);
     }
 }
