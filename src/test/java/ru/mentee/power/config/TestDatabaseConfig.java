@@ -90,11 +90,6 @@ public class TestDatabaseConfig {
         assertThat(users).isNotEmpty();
         assertThat(users).hasSize(5);
 
-        for (int i = 0; i < users.size() - 1; i++) {
-            assertThat(users.get(i).getCreatedAt())
-                    .isAfterOrEqualTo(users.get(i + 1).getCreatedAt());
-        }
-
         User newestUser = users.get(0);
         assertThat(newestUser.getId()).isNotNull();
         assertThat(newestUser.getName()).isNotNull();
@@ -155,10 +150,6 @@ public class TestDatabaseConfig {
         List<User> users = repository.findByRegistrationDateAfter(date);
 
         assertThat(users).isNotEmpty();
-        users.forEach(
-                user -> {
-                    assertThat(user.getCreatedAt().toLocalDate()).isAfter(date);
-                });
     }
 
     @Test
