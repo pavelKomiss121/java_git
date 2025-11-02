@@ -18,10 +18,12 @@ public class IndexUsageStats {
     private String indexName;
     private String tableName;
     private Long totalScans;
+
     /**
      * Количество кортежей, прочитанных из индекса (idx_tup_read)
      */
     private Long tuplesRead;
+
     /**
      * Количество кортежей, возвращенных индексом (idx_tup_fetch)
      */
