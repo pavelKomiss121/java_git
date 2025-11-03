@@ -28,4 +28,3 @@ public class IndexUsageStats {
     private Boolean isUnique;
     private Boolean isPrimary;
 }
-

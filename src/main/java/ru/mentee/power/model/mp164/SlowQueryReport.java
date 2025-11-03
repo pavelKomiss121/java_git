@@ -28,4 +28,3 @@ public class SlowQueryReport {
     private String optimizationSuggestions;
     private Integer slowQueryRank;
 }
-

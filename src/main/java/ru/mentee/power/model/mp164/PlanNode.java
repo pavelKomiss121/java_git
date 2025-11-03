@@ -24,4 +24,3 @@ public class PlanNode {
     private String indexName;
     private String condition;
 }
-

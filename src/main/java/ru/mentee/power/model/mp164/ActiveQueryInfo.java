@@ -29,4 +29,3 @@ public class ActiveQueryInfo {
     private Boolean isBlocking;
     private List<Integer> blockedBy;
 }
-

@@ -30,4 +30,3 @@ public class TableStatistics {
     private LocalDateTime vacuumLastRun;
     private LocalDateTime analyzeLastRun;
 }
-

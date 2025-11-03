@@ -24,4 +24,3 @@ public class CacheHitRatioReport {
     private String recommendation;
     private List<TableCacheStats> tableStats;
 }
-

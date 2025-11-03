@@ -27,4 +27,3 @@ public class QueryExecutionPlan {
     private String recommendations;
     private Boolean usesIndexes;
 }
-

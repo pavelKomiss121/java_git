@@ -24,4 +24,3 @@ public class IndexCreationResult {
     private String performanceImpact;
     private String recommendations;
 }
-

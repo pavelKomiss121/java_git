@@ -26,4 +26,3 @@ public class UnusedIndexReport {
     private String recommendation;
     private String maintenanceCost;
 }
-

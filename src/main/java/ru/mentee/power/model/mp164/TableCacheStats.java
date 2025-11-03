@@ -22,4 +22,3 @@ public class TableCacheStats {
     private Long idxBlksRead;
     private Long idxBlksHit;
 }
-
