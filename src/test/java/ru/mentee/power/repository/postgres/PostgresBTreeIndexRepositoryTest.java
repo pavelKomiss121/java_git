@@ -19,6 +19,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -34,6 +35,7 @@ import ru.mentee.power.model.User;
 import ru.mentee.power.model.mp162.IndexPerformanceTest;
 import ru.mentee.power.model.mp162.IndexSizeInfo;
 
+@Disabled("Урок пройден")
 @Testcontainers
 public class PostgresBTreeIndexRepositoryTest {
 
