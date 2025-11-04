@@ -12,3 +12,7 @@ databaseChangeLog:
       file: migrations/003-generate-massive-test-data.sql
       relativeToChangelogFile: true
 
+  - include:
+      file: migrations/006-create-performance-indexes.sql
+      relativeToChangelogFile: true
+

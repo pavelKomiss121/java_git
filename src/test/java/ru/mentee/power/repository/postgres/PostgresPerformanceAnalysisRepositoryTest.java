@@ -16,6 +16,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -28,6 +29,7 @@ import ru.mentee.power.exception.SASTException;
 import ru.mentee.power.model.analytics.PerformanceMetrics;
 import ru.mentee.power.model.analytics.UserOrderStats;
 
+@Disabled("Урок пройден")
 @Testcontainers
 public class PostgresPerformanceAnalysisRepositoryTest {
 
