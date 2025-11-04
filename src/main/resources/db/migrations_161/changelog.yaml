@@ -1,18 +1,5 @@
 
 databaseChangeLog:
   - include:
-      file: migrations/001-create-schema.sql
+      file: migrations/008-create-acid-tables-standalone.sql
       relativeToChangelogFile: true
-
-  - include:
-      file: migrations/002-create-tables.sql
-      relativeToChangelogFile: true
-
-  - include:
-      file: migrations/003-generate-massive-test-data.sql
-      relativeToChangelogFile: true
-
-  - include:
-      file: migrations/006-create-performance-indexes.sql
-      relativeToChangelogFile: true
-
