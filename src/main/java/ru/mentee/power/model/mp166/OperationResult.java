@@ -24,4 +24,3 @@ public class OperationResult {
     private String errorMessage;
     private Integer retryCount;
 }
-

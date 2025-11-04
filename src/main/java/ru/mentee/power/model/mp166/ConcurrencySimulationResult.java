@@ -21,4 +21,3 @@ public class ConcurrencySimulationResult {
     private Integer deadlockCount;
     private Integer serializationFailureCount;
 }
-

@@ -27,4 +27,3 @@ public class DirtyReadResult {
     private LocalDateTime intermediateReadTime;
     private LocalDateTime operationEndTime;
 }
-

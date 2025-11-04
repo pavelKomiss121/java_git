@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 /**
  * Класс для операции в рамках транзакции.
  * Содержит информацию об отдельной операции (SELECT, UPDATE, INSERT, DELETE).
- * 
+ *
  * @param <T> тип результата операции
  */
 @Data
@@ -29,4 +29,3 @@ public class TransactionOperation<T> {
     private String errorMessage;
     private T result;
 }
-

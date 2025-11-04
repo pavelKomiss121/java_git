@@ -25,4 +25,3 @@ public class TransactionContext {
     private String status; // ACTIVE, COMMITTED, ROLLED_BACK, FAILED
     private Long durationMillis;
 }
-

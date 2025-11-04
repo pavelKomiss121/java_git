@@ -26,4 +26,3 @@ public class PhantomReadResult {
     private Integer newRecordsCount;
     private String query;
 }
-

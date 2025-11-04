@@ -22,4 +22,3 @@ public class ConcurrentBookingResult {
     private Integer stockAfterOperation;
     private List<String> concurrencyIssues;
 }
-

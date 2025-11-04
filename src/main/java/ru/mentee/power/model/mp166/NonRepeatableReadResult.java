@@ -27,4 +27,3 @@ public class NonRepeatableReadResult {
     private LocalDateTime secondReadTime;
     private String concurrentTransactionId;
 }
-
