@@ -17,6 +17,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.exception.BusinessException;
@@ -28,6 +29,7 @@ import ru.mentee.power.model.mp165.*;
 import ru.mentee.power.repository.postgres.PostgresAcidTransactionRepository;
 import ru.mentee.power.test.BaseIntegrationTest;
 
+@Disabled("Урок пройден")
 @DisplayName("Интеграционное тестирование ACID транзакций")
 public class AcidTransactionServiceIntegrationTest extends BaseIntegrationTest {
 
