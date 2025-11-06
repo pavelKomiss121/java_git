@@ -11,3 +11,11 @@ databaseChangeLog:
   - include:
       file: migrations/010-create-test-data.sql
       relativeToChangelogFile: true
+
+  - include:
+      file: migrations/011-create-tables-mp170.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/012-create-window-functions-test-data.sql
+      relativeToChangelogFile: true
