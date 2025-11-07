@@ -31,11 +31,13 @@ CREATE TABLE mentee_power.transactions (
 );
 
 -- Индексы для производительности
-CREATE INDEX idx_accounts_user_id ON mentee_power.accounts(user_id);
-CREATE INDEX idx_accounts_balance ON mentee_power.accounts(balance);
-CREATE INDEX idx_transactions_account_id ON mentee_power.transactions(account_id);
-CREATE INDEX idx_transactions_created_at ON mentee_power.transactions(created_at);
-CREATE INDEX idx_transactions_type_status ON mentee_power.transactions(transaction_type, status);
+CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON mentee_power.accounts(user_id);
+CREATE INDEX IF NOT EXISTS idx_accounts_balance ON mentee_power.accounts(balance);
+CREATE INDEX IF NOT EXISTS idx_accounts_updated_at ON mentee_power.accounts(updated_at);
+CREATE INDEX IF NOT EXISTS idx_transactions_account_id ON mentee_power.transactions(account_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON mentee_power.transactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_transactions_type_status ON mentee_power.transactions(transaction_type, status);
+CREATE INDEX IF NOT EXISTS idx_transactions_amount ON mentee_power.transactions(amount);
 
 -- Тестовые данные для демонстрации
 INSERT INTO mentee_power.accounts (user_id, balance, account_type) VALUES
