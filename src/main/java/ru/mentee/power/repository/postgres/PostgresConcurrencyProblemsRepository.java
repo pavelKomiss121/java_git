@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.mentee.power.config.ApplicationConfig;
 import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.model.mp167.ConcurrencyAnomalyResult;
@@ -20,7 +22,9 @@ import ru.mentee.power.repository.interfaces.ConcurrencyProblemsRepository;
 
 public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblemsRepository {
 
-    private ApplicationConfig config;
+    private static final Logger log =
+            LoggerFactory.getLogger(PostgresConcurrencyProblemsRepository.class);
+    private final ApplicationConfig config;
 
     public PostgresConcurrencyProblemsRepository(ApplicationConfig config) {
         this.config = config;
@@ -67,6 +71,10 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
     @Override
     public ConcurrencyAnomalyResult demonstrateDirtyRead(Long accountId, BigDecimal amountToChange)
             throws DataAccessException {
+        log.info(
+                "Начало демонстрации Dirty Read для счета {} с изменением на {}",
+                accountId,
+                amountToChange);
         LocalDateTime executionTime = LocalDateTime.now();
         long startTime = System.currentTimeMillis();
         String isolationLevel = "READ UNCOMMITTED";
@@ -110,6 +118,11 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
                     !dirtyBalance.equals(initialBalance) && !dirtyBalance.equals(finalBalance);
 
             long duration = System.currentTimeMillis() - startTime;
+            log.info(
+                    "Dirty Read демонстрация завершена. Аномалия обнаружена: {}. Время выполнения:"
+                            + " {} мс",
+                    anomalyDetected,
+                    duration);
 
             List<String> recommendations =
                     Arrays.asList(
@@ -146,6 +159,10 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
     @Override
     public ConcurrencyAnomalyResult demonstrateNonRepeatableRead(
             Long accountId, BigDecimal amountToChange) throws DataAccessException {
+        log.info(
+                "Начало демонстрации Non-repeatable Read для счета {} с изменением на {}",
+                accountId,
+                amountToChange);
         LocalDateTime executionTime = LocalDateTime.now();
         long startTime = System.currentTimeMillis();
         String isolationLevel = "READ COMMITTED";
@@ -178,6 +195,11 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
             boolean anomalyDetected = !firstRead.equals(secondRead);
 
             long duration = System.currentTimeMillis() - startTime;
+            log.info(
+                    "Non-repeatable Read демонстрация завершена. Аномалия обнаружена: {}. Время"
+                            + " выполнения: {} мс",
+                    anomalyDetected,
+                    duration);
 
             List<String> recommendations =
                     Arrays.asList(
@@ -217,6 +239,11 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
     public ConcurrencyAnomalyResult demonstratePhantomRead(
             Long accountId, BigDecimal thresholdAmount, BigDecimal newTransactionAmount)
             throws DataAccessException {
+        log.info(
+                "Начало демонстрации Phantom Read для счета {} с порогом {} и новой транзакцией {}",
+                accountId,
+                thresholdAmount,
+                newTransactionAmount);
         LocalDateTime executionTime = LocalDateTime.now();
         long startTime = System.currentTimeMillis();
         String isolationLevel = "REPEATABLE READ";
@@ -260,6 +287,12 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
             Integer newRecordsCount = secondCount - firstCount;
 
             long duration = System.currentTimeMillis() - startTime;
+            log.info(
+                    "Phantom Read демонстрация завершена. Аномалия обнаружена: {}. Новых записей:"
+                            + " {}. Время выполнения: {} мс",
+                    anomalyDetected,
+                    newRecordsCount,
+                    duration);
 
             List<String> recommendations =
                     Arrays.asList(
@@ -332,6 +365,11 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
     public ConcurrencyAnomalyResult demonstrateLostUpdate(
             Long accountId, BigDecimal firstAmount, BigDecimal secondAmount)
             throws DataAccessException {
+        log.info(
+                "Начало демонстрации Lost Update для счета {} с суммами {} и {}",
+                accountId,
+                firstAmount,
+                secondAmount);
         LocalDateTime executionTime = LocalDateTime.now();
         long startTime = System.currentTimeMillis();
         String isolationLevel = "READ COMMITTED";
@@ -388,6 +426,13 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
                 boolean anomalyDetected = !finalBalance.equals(expectedBalance);
 
                 long duration = System.currentTimeMillis() - startTime;
+                log.info(
+                        "Lost Update демонстрация завершена. Аномалия обнаружена: {}. Ожидаемый:"
+                                + " {}, Фактический: {}. Время выполнения: {} мс",
+                        anomalyDetected,
+                        expectedBalance,
+                        finalBalance,
+                        duration);
 
                 List<String> recommendations =
                         Arrays.asList(
@@ -429,6 +474,11 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
     @Override
     public MoneyTransferResult safeMoneyTransfer(
             Long fromAccountId, Long toAccountId, BigDecimal amount) throws DataAccessException {
+        log.info(
+                "Начало безопасного перевода {} со счета {} на счет {}",
+                amount,
+                fromAccountId,
+                toAccountId);
         LocalDateTime executionTime = LocalDateTime.now();
         long startTime = System.currentTimeMillis();
         String isolationLevel = "SERIALIZABLE";
@@ -443,6 +493,11 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
 
             // Проверяем достаточность средств
             if (fromBalanceBefore.compareTo(amount) < 0) {
+                log.warn(
+                        "Недостаточно средств на счете {} для перевода {}. Баланс: {}",
+                        fromAccountId,
+                        amount,
+                        fromBalanceBefore);
                 conn.rollback();
                 return MoneyTransferResult.builder()
                         .status("FAILED")
@@ -471,6 +526,16 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
             conn.commit();
 
             long duration = System.currentTimeMillis() - startTime;
+            log.info(
+                    "Безопасный перевод успешно выполнен за {} мс. Со счета {}: {} -> {}, На счет"
+                            + " {}: {} -> {}",
+                    duration,
+                    fromAccountId,
+                    fromBalanceBefore,
+                    fromBalanceAfter,
+                    toAccountId,
+                    toBalanceBefore,
+                    toBalanceAfter);
 
             return MoneyTransferResult.builder()
                     .status("SUCCESS")
@@ -489,6 +554,8 @@ public class PostgresConcurrencyProblemsRepository implements ConcurrencyProblem
         } catch (SQLException e) {
             String errorCode = e.getSQLState();
             if ("40001".equals(errorCode)) { // Serialization failure
+                log.warn(
+                        "Обнаружена ошибка сериализации (40001) при переводе. Повторите операцию.");
                 return MoneyTransferResult.builder()
                         .status("SERIALIZATION_FAILURE")
                         .amount(amount)

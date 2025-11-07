@@ -16,7 +16,6 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.exception.DataAccessException;
@@ -25,7 +24,20 @@ import ru.mentee.power.model.mp167.ConcurrencyAnomalyResult;
 import ru.mentee.power.model.mp167.MoneyTransferResult;
 import ru.mentee.power.test.BaseIntegrationTest;
 
-@Disabled("Урок пройден")
+/**
+ * Интеграционные тесты для демонстрации проблем конкурентности в PostgreSQL.
+ *
+ * Тесты проверяют корректность воспроизведения аномалий:
+ * - Dirty Read (READ UNCOMMITTED)
+ * - Non-repeatable Read (READ COMMITTED)
+ * - Phantom Read (REPEATABLE READ)
+ * - Lost Update (READ COMMITTED)
+ *
+ * Тесты также проверяют безопасные операции с правильными уровнями изоляции.
+ *
+ * Примечание: Тесты могут быть отключены (@Disabled), если урок уже пройден,
+ * но они остаются для демонстрации и обучения.
+ */
 @DisplayName("Интеграционное тестирование проблем конкурентности")
 @SuppressWarnings({"resource", "deprecation"})
 public class PostgresConcurrencyProblemsRepositoryTest extends BaseIntegrationTest {
