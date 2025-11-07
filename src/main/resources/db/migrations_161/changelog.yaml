@@ -9,7 +9,7 @@ databaseChangeLog:
       relativeToChangelogFile: true
 
   - include:
-      file: migrations/010-create-test-data.sql
+      file: migrations/010a-create-tables-mp168.sql
       relativeToChangelogFile: true
 
   - include:
@@ -18,4 +18,11 @@ databaseChangeLog:
 
   - include:
       file: migrations/012-create-window-functions-test-data.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/013-create-cte-analytics-schema.sql
+      relativeToChangelogFile: true
+  - include:
+      file: migrations/014-create-cte-analytics-test-data.sql
       relativeToChangelogFile: true
