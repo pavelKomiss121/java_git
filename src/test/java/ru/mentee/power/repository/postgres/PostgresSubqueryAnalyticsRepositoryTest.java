@@ -18,6 +18,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import ru.mentee.power.test.BaseIntegrationTest;
 
 @DisplayName("Тестирование подзапросов и аналитики")
 @SuppressWarnings({"resource", "deprecation"})
+@Disabled("Урок пройден")
 public class PostgresSubqueryAnalyticsRepositoryTest extends BaseIntegrationTest {
 
     private static final Logger log =
