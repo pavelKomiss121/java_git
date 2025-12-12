@@ -28,5 +28,9 @@ databaseChangeLog:
       relativeToChangelogFile: true
 
   - include:
+      file: migrations/016-add-jdbc-test-columns.sql
+      relativeToChangelogFile: true
+
+  - include:
       file: migrations/015-create-cte.sql
       relativeToChangelogFile: true
