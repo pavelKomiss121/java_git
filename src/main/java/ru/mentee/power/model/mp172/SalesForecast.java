@@ -98,4 +98,3 @@ public class SalesForecast {
      */
     private Integer forecastMonthNumber;
 }
-

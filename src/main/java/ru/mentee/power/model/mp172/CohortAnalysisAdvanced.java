@@ -98,4 +98,3 @@ public class CohortAnalysisAdvanced {
      */
     private BigDecimal predictedLifetimeMonths;
 }
-

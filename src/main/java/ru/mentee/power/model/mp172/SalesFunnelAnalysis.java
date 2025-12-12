@@ -98,4 +98,3 @@ public class SalesFunnelAnalysis {
      */
     private String stageTrend;
 }
-
