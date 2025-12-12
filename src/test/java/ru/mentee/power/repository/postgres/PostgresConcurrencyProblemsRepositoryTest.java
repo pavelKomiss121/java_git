@@ -16,6 +16,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.exception.DataAccessException;
@@ -38,6 +39,7 @@ import ru.mentee.power.test.BaseIntegrationTest;
  * Примечание: Тесты могут быть отключены (@Disabled), если урок уже пройден,
  * но они остаются для демонстрации и обучения.
  */
+@Disabled("Урок пройден")
 @DisplayName("Интеграционное тестирование проблем конкурентности")
 @SuppressWarnings({"resource", "deprecation"})
 public class PostgresConcurrencyProblemsRepositoryTest extends BaseIntegrationTest {

@@ -15,6 +15,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.exception.DataAccessException;
@@ -33,6 +34,7 @@ import ru.mentee.power.test.BaseIntegrationTest;
  */
 @DisplayName("Тестирование уровней изоляции транзакций")
 @SuppressWarnings({"resource", "deprecation"})
+@Disabled("Урок пройден")
 public class PostgresIsolationLevelRepositoryTest extends BaseIntegrationTest {
 
     private Liquibase liquibase;
