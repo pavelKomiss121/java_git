@@ -51,6 +51,14 @@ dependencies {
 	implementation 'org.slf4j:slf4j-api:2.0.9'
 	implementation 'ch.qos.logback:logback-classic:1.4.11'
 
+	// Connection Pool
+	implementation 'com.zaxxer:HikariCP:5.1.0'
+	implementation 'org.apache.commons:commons-dbcp2:2.11.0'
+
+	// Метрики и мониторинг
+	implementation 'io.micrometer:micrometer-core:1.12.0'
+	implementation 'io.dropwizard.metrics:metrics-core:4.2.22'
+
 	// Тестирование
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 	testImplementation 'org.assertj:assertj-core:3.24.2'
@@ -66,6 +74,8 @@ dependencies {
 	// Дополнительные утилиты
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	testCompileOnly 'org.projectlombok:lombok:1.18.30'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 	// Liquibase - основные зависимости
 	implementation 'org.liquibase:liquibase-core:4.27.0'
