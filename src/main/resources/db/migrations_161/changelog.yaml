@@ -34,3 +34,7 @@ databaseChangeLog:
   - include:
       file: migrations/015-create-cte.sql
       relativeToChangelogFile: true
+
+  - include:
+      file: migrations/017-create-transaction-test-schema.sql
+      relativeToChangelogFile: true
